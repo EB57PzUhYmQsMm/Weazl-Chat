@@ -1,5 +1,3 @@
-const { Z_FILTERED } = require('zlib');
-
 var app = require('express')();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
@@ -36,11 +34,10 @@ io.on('connection', (socket) => {
     socket.name = msg;
     io.emit('log message', socket.name+" has joined the chatroom!");
     io.emit('log message', "there are now "+usercount+" participant(s)");
-    //members.append(name); TODO: Gives Error for no reason
   })
   socket.on('chat message', (msg) => {
     if (msg == ""){
-      
+      socket.emit("log error", "Please type a message.");
     }
     else{
       if (!(filter(socket.name))){
