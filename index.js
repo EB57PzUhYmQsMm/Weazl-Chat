@@ -15,6 +15,10 @@ app.get('/style.css', (req, res) => {
   res.sendFile(__dirname + '/style.css');
 })
 
+app.get('/assets/emoji.png', (req, res) => {
+  res.sendFile(__dirname + '/assets/emoji.png');
+})
+
 var ConnectedUsers = [];
 
 io.on('connection', (socket) => {
