@@ -1,5 +1,27 @@
 var name = "";
 var socket = io();
+var chat = {};
+chat.debug = {};
+
+chat.debug.error = function(error){
+    $('#messages').append($('<li>').text(error).addClass("system").addClass("error"));
+}
+
+chat.debug.log = function(log){
+    $('#messages').append($('<li>').text(log).addClass("system"));
+}
+
+chat.debug.message = function(name, what){
+    $('#messages').append($('<li>').append($('<div>').addClass('messageBody').append($('<div>').addClass('name').text(name)).append($('<div>').addClass('message').text(what))));
+}
+
+chat.debug.clear = function(){
+    let msgHolder = document.getElementById("messages");
+    while (msgHolder.hasChildNodes()) {
+        msgHolder.removeChild(msgHolder.lastChild);
+    }
+    console.log("Cleared messages");
+}
 
 function scrollToBottom(){
     var objDiv = document.getElementById("messagelist");
@@ -20,7 +42,9 @@ $(function () {
   socket.on('log message', function (data){
     $('#messages').append($('<li>').text(data).addClass("system"));
    });
-  //socket.on('')
+   socket.on('log error', function(data){
+    $('#messages').append($('<li>').text(data).addClass("system").addClass("error"));
+   })
 });
 
 
