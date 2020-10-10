@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Weazl Chat</title>
+    <link href = "style.css" rel = "stylesheet">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class = "chooseName">
+      <label class = "name">Choose your name</label>
+      <input type = "text" class = "name" id = "name">
+      <button class = "name" onclick = "setName();">Done</button>
+    </div>
+    <div class = "memberlist">
+      <div class = "title">
+        <div class = "text">MEMBERLIST</div>
+      </div>
+    </div>
+    <!-- Todo, fix stuff layed out below -->
+    <div class = "messagelist" id = "messagelist">    
+      <ul id="messages"></ul>
+    </div>
+    <form action="">
+      <!-- This needs the file icon to the left. -->
+      <div class = "textArea">
+        <!-- This input needs fixing so it doesn't overlap with the message container & messages -->
+        <input placeholder="Type your message here" id="m" autocomplete="off"/>
+        <!-- This is my attempt at the discord emoji thing -->
+        <div class = "textExtras">`
+          <!-- This needs a lot of fixing, not properly alligned, grayscaled improperly, looks odd. -->
+          <div class = "emojiButton">
+
+          </div>
+        </div>
+      </div>
+    </form>
+    <script src = "script.js"></script>
+  </body>
+</html>
