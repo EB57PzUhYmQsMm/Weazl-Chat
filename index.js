@@ -47,18 +47,10 @@ io.on('connection', (socket) => {
       socket.emit("log error", "Please type a message.");
     }
     else{
-      if (!(filter(socket.name))){
-        io.emit('chat message', {
-          username: "DefaultUser",
-          message: msg
-        });
-      }
-      else{
-        io.emit('chat message', {
-          username: socket.name,
-          message: msg
-        });
-      }
+      io.emit('chat message', {
+        username: socket.name,
+        message: msg
+      });
     }
   });
   socket.on("memberlist", () => {
