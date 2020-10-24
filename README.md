@@ -7,3 +7,5 @@ or if you want to connect to multiple sockets just edit script.js and choose the
 
 # Contributing
 Look for new issues or improvements in the code (A lot are available right now)
+# Dependencies
+Uses Express for sending webpages (Anything under htdocs) and uses SOCKET.IO for networking & communication
