@@ -5,15 +5,69 @@ chat.debug = {};
 // Might aswell declare the song here so it instantly loads
 var song = new Audio("./assets/ping.mp3");
 
+// Found on stackoverflow, since I don't want to do this server-side
 function urlify(text) {
     var urlRegex = /(https?:\/\/[^\s]+)/g;
     return text.replace(urlRegex, function(url) {
-      return '<a target="_blank" href="' + url + '">' + url + '</a>';
+      if (isUriImage(url)){
+        return '<img src="'+url+'" class="image link"></img>';
+      }
+      else if (isVideo(url)){
+          return '<video width="350" height="150" controls><source src="'+url+'" type="video/mp4"></video>';
+      }
+      else if (isYoutube(url)){
+          return '<iframe src="https://www.youtube-nocookie.com/embed/'+getIdFromYoutube(url)+'"></iframe>';
+      }
+      else{
+        return '<a target="_blank" href="' + url + '">' + url + '</a>';
+      }
     })
     // or alternatively
     // return text.replace(urlRegex, '<a href="$1">$1</a>')
-  }
-
+}
+// Based off of the stackoverflow image thing, but made by myself
+function isVideo(uri){
+    uri = uri.split('?')[0];
+    var parts = uri.split('.');
+    var extension = parts[parts.length-1];
+    var imageTypes = ['mp4'];
+    if(imageTypes.indexOf(extension) !== -1) {
+        return true;   
+    }
+}
+function getIdFromYoutube(uri){
+    if (uri.toString().includes("youtube.com")){
+        return uri.substring(uri.indexOf("?v=") + 3);
+    }
+    else{
+        return "0";
+    }
+}
+// Checking if its a youtube video, then just iframe it
+function isYoutube(uri){
+    uri = uri.split('?')[0];
+    if (uri.toString().includes("youtube.com")){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+// Another thing found on stackoverflow just to save time
+var isUriImage = function(uri) {
+        //make sure we remove any nasty GET params 
+        uri = uri.split('?')[0];
+        //moving on, split the uri into parts that had dots before them
+        var parts = uri.split('.');
+        //get the last part ( should be the extension )
+        var extension = parts[parts.length-1];
+        //define some image types to test against
+        var imageTypes = ['jpg','jpeg','tiff','png','gif','bmp'];
+        //check if the extension matches anything in the list.
+        if(imageTypes.indexOf(extension) !== -1) {
+            return true;   
+        }
+}
 // This is how we will know when to remove messages from memory so we don't start using 200 gigabytes in our memory
 function getCount(parent, getChildrensChildren){
     var relevantChildren = 0;
@@ -48,6 +102,7 @@ chat.MessageBody = function (div, what){
 }
 chat.debug.message = function(name, what){
     $('#messages').append($('<li>').append($('<div>').attr('id', 'messageBody').addClass('messageBody').append($('<div>').addClass('name').text(name)).append($('<div>').addClass('message').html(what))));
+    scrollToBottom();
 }
 
 chat.debug.clear = function(){
@@ -209,4 +264,8 @@ if (isName()){
     name = getName();
     document.getElementsByClassName("chooseName")[0].style.display = "none";
     socket.emit("name", name);
+}
+
+document.onkeypress = function (e) {
+    $('#m').focus();
 }
