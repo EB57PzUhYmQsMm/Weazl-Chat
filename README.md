@@ -1,4 +1,4 @@
-# Weazl Server
+# Weazl Chat
 The server & site for Weazl Chat.
 
 # How to connect
