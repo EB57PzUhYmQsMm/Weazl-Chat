@@ -4,12 +4,13 @@ var path = require('path');
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 var members = [];
+const port = 3000;
 var usercount = 0;
 app.use(express.static(path.join(__dirname, 'htdocs')));
 
 
- http.listen(80, () => {
-  console.log('Listening on *:80');
+ http.listen(port, () => {
+  console.log('Listening on *:'+port);
 });
 
 
@@ -43,8 +44,15 @@ io.on('connection', (socket) => {
     }
   });
   socket.on('chat message', (msg) => {
+    let nospace = msg.replace(" ", "");
     if (msg == ""){
       socket.emit("log error", "Please type a message.");
+    }
+    else if (nospace == ""){
+      socket.emit("log error", "Please type a proper message.")
+    }
+    else if (msg.length >= 1200){
+      socket.emit("log error", "Character overflow error, please turn down the amount of characters your message is using")
     }
     else{
       io.emit('chat message', {
@@ -60,7 +68,7 @@ io.on('connection', (socket) => {
 
 
 function filter(name){
-let nospace = name.replace(/\s/g, '');
+let nospace = name.replace(' ', '');
 name = name.toLowerCase();
 if (nospace == ""){
     return false;

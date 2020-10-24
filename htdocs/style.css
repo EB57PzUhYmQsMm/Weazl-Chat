@@ -26,6 +26,11 @@ form input {
     color: white; 
 }
 
+a{
+    color: #00b0f4;
+    text-decoration: none;
+}
+
 /*
 Needs HEAVY fixing!!!
 TODO: fix grayscale, size, position
