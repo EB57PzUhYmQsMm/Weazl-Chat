@@ -10,7 +10,7 @@ function urlify(text) {
     var urlRegex = /(https?:\/\/[^\s]+)/g;
     return text.replace(urlRegex, function(url) {
       if (isUriImage(url)){
-        return '<img src="'+url+'" class="image link"></img>';
+        return '<img onclick="showImage(\''+url+'\');" src="'+url+'" class="image link"></img>';
       }
       else if (isVideo(url)){
           return '<video width="350" height="150" controls><source src="'+url+'" type="video/mp4"></video>';
@@ -267,5 +267,15 @@ if (isName()){
 }
 
 document.onkeypress = function (e) {
-    $('#m').focus();
+    if (name != ""){
+        $('#m').focus();
+    }
+}
+
+function showImage(url){
+    $("#overlayContainer").attr('src', url);
+    document.getElementById("overlay").style.display = "block";
+}
+function hideOverlay(){
+    document.getElementById("overlay").style.display = "none";
 }
