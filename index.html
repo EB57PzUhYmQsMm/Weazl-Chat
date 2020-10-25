@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Weazl Chat</title>
+    <link href = "style.css" rel = "stylesheet">
+	<link href = "discord-colors.css" rel = "stylesheet">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="overlay" onclick="hideOverlay()">
+      <img src = "" class = "overlayImage" id="overlayContainer"></img>
+    </div>
+	<div id="overlaySettings">
+	  <div class = "overlayDiv">
+		  <div class="tab">
+			<button class="tablinks" onclick="openCity(event, 'London')" id="defaultOpen">Account Settings</button>
+			<button class="tablinks" onclick="openCity(event, 'Paris')">Chat Settings</button>
+			<button class="tablinks" onclick="openCity(event, 'Tokyo')">Miscellaneous Settings</button>
+			<button class="tablinks exit" onclick="hideSettings()">Exit</button>
+		</div>
+
+		<div id="London" class="tabcontent">
+			<br>
+			<h3>Account Settings</h3>
+			<hr class="hr">
+			<h2>Chat Name</h2>
+			<br>
+			<input type = "text" class = "textbox" id = "chatName">
+			<button class = "button full" onclick = "saveSetting('name');">Save</button>
+		</div>
+
+		<div id="Paris" class="tabcontent">
+			<br>
+			<h3>Chat Settings</h3>
+			<hr class="hr">
+			<h2>Message Cap</h2>
+			<br>
+			<input type = "text" class = "textbox" id = "messageCap">
+			<button class = "button full" onclick = "saveSetting('messageCap');">Save</button>
+		</div>
+
+		<div id="Tokyo" class="tabcontent">
+		<h3>Tokyo</h3>
+		<p>Tokyo is the capital of Japan.</p>
+		</div>
+	  </div>
+    </div>
+    <div class = "chooseName">
+      <label class = "name">Choose your name</label>
+      <input type = "text" class = "name" id = "name">
+      <button class = "name" onclick = "setName();">Done</button>
+    </div>
+	<div class = "containerList">
+		<button class="settings" onclick="showSettings();" style="vertical-align:middle"><span>Settings </span></button>
+	</div>
+    <!-- Todo, fix stuff layed out below -->
+    <div class = "messagelist" id = "messagelist">    
+      <ul id="messages"></ul>
+    </div>
+    <form action="">
+      <!-- This needs the file icon to the left. -->
+      <div class = "textArea">
+        <!-- This input needs fixing so it doesn't overlap with the message container & messages -->
+        <input placeholder="Type your message here" id="m" autocomplete="off" disabled/>
+        <!-- This is my attempt at the discord emoji thing -->
+        <div class = "textExtras">
+          <!-- This needs a lot of fixing, not properly alligned, grayscaled improperly, looks odd. -->
+          <div class = "emojiButton">
+
+          </div>
+        </div>
+      </div>
+    </form>
+    <script src = "script.js"></script>
+  </body>
+</html>
