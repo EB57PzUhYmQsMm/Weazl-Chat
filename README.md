@@ -20,3 +20,10 @@ Basic Name Filter<br>
 Basic Space Filter (Invisible Names / Messages)<br>
 Youtube Video Embedding<br>
 MP4 Video Link Embedding<br>
+Client Download Link
+Overlays
+Settings
+& More
+  
+# Notes
+If you do want to use the Download Client feature, and want to make your own electron client before we release ours, Please make sure to have a Application.zip under your htdocs directory
