@@ -2,9 +2,26 @@ var name = "";
 var socket = io();
 var chat = {};
 chat.debug = {};
+
+chat.overlayOpen = false;
+chat.messageCap = 50;
 // Might aswell declare the song here so it instantly loads
 var song = new Audio("./assets/ping.mp3");
 
+function loadData(){
+	if (loadItem("messageCap")){
+		chat.messageCap = Number(localStorage.getItem("messageCap"));
+	}
+}
+
+function loadItem(name){
+	if (localStorage.getItem(name) != null && localStorage.getItem(name) != ""){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
 // Found on stackoverflow, since I don't want to do this server-side
 function urlify(text) {
     var urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -16,8 +33,11 @@ function urlify(text) {
           return '<video width="350" height="150" controls><source src="'+url+'" type="video/mp4"></video>';
       }
       else if (isYoutube(url)){
-          return '<iframe src="https://www.youtube-nocookie.com/embed/'+getIdFromYoutube(url)+'"></iframe>';
+          return '<iframe src="https://www.youtube-nocookie.com/embed/'+getIdFromYoutube(url)+'" fullscreen></iframe>';
       }
+	  else if (url.includes("chat.frionx.repl.co/download")){
+		  return '<a target="_blank" href="' + url + '">' + url + '</a><br><div id="discordInvite" style="width: 250px;"><h5 id="introText" class="noselect loadHidden">Download Weazl</h5><div id="discordData"><div id="discordInfo"><div id="serverNameBox" class="discordLink"><span class="noselect" id="serverName">Weazl</span></div><button type="button" onclick="download();" class="discordLink" id="callToAction"><div id="buttonText" class="noselect">Download</div></button></div></div>';
+	  }
       else{
         return '<a target="_blank" href="' + url + '">' + url + '</a>';
       }
@@ -133,21 +153,11 @@ $(function () {
     }
     else if (message.length >= 1200){
         chat.debug.error("Please type a smaller message; Current character count is: "+message.length);
-        let element = document.getElementById("messages");
-        let amountOfDivs = Number(getCount(element, false));
-        console.log("Message Count: "+amountOfDivs);
-        if (amountOfDivs >= 49){
-            $('#messages').find('li').first().remove();
-        }
+		capMessages();
     }
     else{
         chat.debug.message(name, urlify(message));
-        let element = document.getElementById("messages");
-        let amountOfDivs = Number(getCount(element, false));
-        console.log("Message Count: "+amountOfDivs);
-        if (amountOfDivs >= 49){
-            $('#messages').find('li').first().remove();
-        }
+		capMessages();
     }
     $('#m').val('');
     return false;
@@ -158,49 +168,43 @@ $(function () {
     }
     else{
         if (document.hasFocus()){
-            let element = document.getElementById("messages");
-            let amountOfDivs = Number(getCount(element, false));
-            console.log("Message Count: "+amountOfDivs);
-            if (amountOfDivs >= 49){
-                $('#messages').find('li').first().remove();
-            }
+			capMessages();
         }
         else{
-            let element = document.getElementById("messages");
-            let amountOfDivs = Number(getCount(element, false));
-            console.log("Message Count: "+amountOfDivs);
-            if (amountOfDivs >= 49){
-                $('#messages').find('li').first().remove();
-            }
+			capMessages();
+			notifyMe(data.username, data.message);
             chat.debug.ping();
         }
         chat.debug.message(data.username, urlify(data.message));
     }
     scrollToBottom();
   });
+  socket.on('image receive', function(data){
+	let username = data.username;
+	let image = data.image;
+	console.log("Receiving Image...");
+	chat.debug.message(username, `<img onclick='showImage("${image}");' src='${image}' class="image link"></img>`)
+  });
   socket.on('log message', function (data){
     chat.debug.log(data);
-    let element = document.getElementById("messages");
-    let amountOfDivs = Number(getCount(element, false));
-    console.log("Message Count: "+amountOfDivs);
-    if (amountOfDivs >= 49){
-        $('#messages').find('li').first().remove();
-    }
+	capMessages();
     scrollToBottom();
    });
    socket.on('log error', function(data){
     chat.debug.error(data);
-    let element = document.getElementById("messages");
-    let amountOfDivs = Number(getCount(element, false));
-    console.log("Message Count: "+amountOfDivs);
-    if (amountOfDivs >= 49){
-        $('#messages').find('li').first().remove();
-    }
+	capMessages();
     scrollToBottom();
    })
 });
 
-
+function capMessages(){
+    let element = document.getElementById("messages");
+    let amountOfDivs = Number(getCount(element, false));
+    console.log("Message Count: "+amountOfDivs);
+    if (amountOfDivs >= chat.messageCap){
+        $('#messages').find('li').first().remove();
+    }
+}
 
 function setName(){
     name = document.getElementById("name").value;
@@ -212,6 +216,7 @@ function setName(){
 
 function saveName(){
     localStorage.setItem("name", name);
+	$("#m").removeAttr("disabled");
 }
 
 function isName(){
@@ -239,6 +244,10 @@ function getName(){
     }
 }
 
+function requestNotifs(){
+	Notification.requestPermission();
+}
+
 function filter(name){
  let nospace = name.replace(/\s/g, '');
  name = name.toLowerCase();
@@ -257,25 +266,198 @@ function filter(name){
  return true;
 }
 
+function download(){
+	window.open("Application.zip");
+}
+
+function notifyMe(title, body="defaultbody") {
+  // Let's check if the browser supports notifications
+  if (!("Notification" in window)) {
+    alert("This browser does not support desktop notification");
+  }
+
+  // Let's check whether notification permissions have already been granted
+  else if (Notification.permission === "granted") {
+    // If it's okay let's create a notification
+    var notification = new Notification(title, {
+		body: body,
+		icon: 'https://chat.frionx.repl.co/assets/weazl_nb.png'
+	});
+  }
+
+  // Otherwise, we need to ask the user for permission
+  else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then(function (permission) {
+      // If the user accepts, let's create a notification
+      if (permission === "granted") {
+    	var notification = new Notification(title, {
+			body: body,
+			icon: 'https://chat.frionx.repl.co/assets/weazl_nb.png'
+		});
+      }
+    });
+  }
+
+  // At last, if the user has denied notifications, and you 
+  // want to be respectful there is no need to bother them any more.
+}
+function isElectron() {
+    // Renderer process
+    if (typeof window !== 'undefined' && typeof window.process === 'object' && window.process.type === 'renderer') {
+        return true;
+    }
+
+    // Main process
+    if (typeof process !== 'undefined' && typeof process.versions === 'object' && !!process.versions.electron) {
+        return true;
+    }
+
+    // Detect the user agent when the `nodeIntegration` option is set to true
+    if (typeof navigator === 'object' && typeof navigator.userAgent === 'string' && navigator.userAgent.indexOf('Electron') >= 0) {
+        return true;
+    }
+
+    return false;
+}
 // Onload
 
-
+notifyMe("Thank you for enabling notifications!", "Welcome to Weazl Chat!");
 if (isName()){
+	$("#m").removeAttr("disabled");
     name = getName();
     document.getElementsByClassName("chooseName")[0].style.display = "none";
     socket.emit("name", name);
 }
 
 document.onkeypress = function (e) {
-    if (name != ""){
+    if (name != "" && chat.overlayOpen == false){
         $('#m').focus();
     }
 }
 
+function openCity(evt, cityName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+
+function saveSetting(name){
+	switch (name){
+		case "name":
+			let chatName = $("#chatName").val();
+			changeName(chatName);
+			break;
+		case "messageCap":
+			let messageCapacity = $("#messageCap").val();
+			chat.messageCap = Number(messageCapacity);
+			chat.debug.log("Changed message cap!");
+			localStorage.setItem("messageCap", messageCapacity);
+			break;
+		default:
+			console.log("Could not get setting to save");
+			break;
+	}
+}
+
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
+
 function showImage(url){
     $("#overlayContainer").attr('src', url);
     document.getElementById("overlay").style.display = "block";
+	chat.overlayOpen = true;
 }
 function hideOverlay(){
     document.getElementById("overlay").style.display = "none";
+	chat.overlayOpen = false;
+}
+
+function showSettings(){
+    document.getElementById("overlaySettings").style.display = "block";
+	chat.overlayOpen = true;
+}
+
+function hideSettings(){
+    document.getElementById("overlaySettings").style.display = "none";
+	chat.overlayOpen = false;
+}
+
+if (isElectron()){
+	console.log("User is running under /Weazl/App");
+}
+else{
+	console.log("User is in browser-mode");
+}
+
+loadData();
+/*
+function retrieveImageFromClipboardAsBlob(pasteEvent, callback){
+	if(pasteEvent.clipboardData == false){
+        if(typeof(callback) == "function"){
+            callback(undefined);
+        }
+    };
+
+    var items = pasteEvent.clipboardData.items;
+
+    if(items == undefined){
+        if(typeof(callback) == "function"){
+            callback(undefined);
+        }
+    };
+
+    for (var i = 0; i < items.length; i++) {
+        // Skip content if not image
+        if (items[i].type.indexOf("image") == -1) continue;
+        // Retrieve image on clipboard as blob
+        var blob = items[i].getAsFile();
+
+        if(typeof(callback) == "function"){
+            callback(blob);
+        }
+    }
+}
+
+
+window.addEventListener("paste", function(e){
+
+    // Handle the event
+    retrieveImageFromClipboardAsBlob(e, function(imageBlob){
+        // If there's an image, display it in the canvas
+        if(imageBlob){
+            var URLObj = window.URL || window.webkitURL;
+            var jesus = URLObj.createObjectURL(imageBlob);
+			console.log(jesus);
+        }
+    });
+}, false);
+*/
+document.onpaste = function (event) {
+  // use event.originalEvent.clipboard for newer chrome versions
+  var items = (event.clipboardData  || event.originalEvent.clipboardData).items;
+  console.log(JSON.stringify(items)); // will give you the mime types
+  // find pasted image among pasted items
+  var blob = null;
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].type.indexOf("image") === 0) {
+      blob = items[i].getAsFile();
+    }
+  }
+  // load image if there is a pasted image
+  if (blob !== null) {
+    var reader = new FileReader();
+    reader.onload = function(event) {
+		socket.emit("image", event.target.result);
+		console.log(event.target.result);
+    };
+    reader.readAsDataURL(blob);
+  }
 }

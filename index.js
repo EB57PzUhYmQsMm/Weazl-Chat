@@ -43,6 +43,19 @@ io.on('connection', (socket) => {
       socket.emit("log error", "{System} Could not change your name since it contains profanity / illegal characters");
     }
   });
+  socket.on('image', (msg) =>{
+	  console.log("Received image..")
+	  if (socket.name == ""){
+		socket.emit("log error", "Your name is empty server side, Please refresh the page or run changeName(\"NewName\"); in F12 Console");
+	  }
+	  else{
+		console.log("sent image");
+	  	io.emit('image receive', { 
+			  username: socket.name, 
+			  image: msg 
+		});
+	  }
+  });
   socket.on('chat message', (msg) => {
     let nospace = msg.replace(" ", "");
     if (msg == ""){

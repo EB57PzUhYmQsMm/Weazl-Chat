@@ -4,6 +4,132 @@ body {
     background-color: #171A1F; 
     color: white; 
 }
+
+.full{
+	width: 100%;
+}
+
+.medium{
+	width: 50%;
+}
+
+.textbox{
+	background-color: #1B1E23;
+	font-size: 2vw;
+	width: 100%;
+	color: white;
+	padding: 1%;
+	border: none;
+	outline: none;
+	margin-bottom: 1%;
+	border-radius: 4px;
+}
+
+.hr{
+	margin-top: 1%;
+	border: 3px solid white;
+	border-radius: 3px;
+	background-color: white;
+	margin-bottom: 1%;
+}
+
+.button {
+  background-color: #1B1E23;
+  border: none;
+  color: white;
+  padding: 2.8%;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1.5vw;
+  outline: none;
+  min-width: 25%;
+  margin-bottom: 1%;
+  border-radius: 4px;
+}
+
+.button:hover{
+	background-color: #171A1F;
+}
+
+#overlaySettings {
+  position: fixed;
+  display: none;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 73274294792744448979878978798769420;
+  cursor: pointer;
+  user-select: none;
+}
+
+div.overlayDiv{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 70%;
+    height: 70%;
+	box-sizing: border-box;
+    color: white;
+    transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+	z-index: 7327429479274444897987897879876942069;
+	background-color: #333;
+}
+
+.settings {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #f4511e;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 2vw;
+  padding: 20px;
+  width: 90%;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.settings span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.settings span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.settings:hover span {
+  padding-right: 25px;
+}
+
+.settings:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+div.containerList{
+	position: absolute;
+	top: 0%;
+	left: 85%;
+	width: 15%;
+	height: 100%;
+	background-color: #1B1E23;
+}
+
 /* For our Upclose images / zoomed in images */
 #overlay {
   position: fixed;
@@ -15,17 +141,59 @@ body {
   right: 0;
   bottom: 0;
   background-color: rgba(0,0,0,0.5);
-  z-index: 732742947927;
+  z-index: 73274294792744448979878978798769;
   cursor: pointer;
   user-select: none;
+}
+
+.tab {
+  float: left;
+  background-color: #171A1F;
+  width: 30%;
+  height: 100%;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  display: block;
+  background-color: inherit;
+  color: white;
+  padding: 3%;
+  width: 100%;
+  border: none;
+  outline: none;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 1.5vw;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #333;
+}
+
+/* Create an active/current "tab button" class */
+.tab button.active {
+  background-color: #333;
+}
+
+/* Style the tab content */
+.tabcontent {
+  float: left;
+  padding: 0px 12px;
+  border: 1px solid #333;
+  width: 70%;
+  border-left: none;
+  height: 100%;
 }
 
 img.overlayImage{
     position: absolute;
     top: 50%;
     left: 50%;
-    max-width: 50%;
-    max-height: 50%;
+    max-width: 75%;
+    max-height: 75%;
     color: white;
     transform: translate(-50%,-50%);
     -ms-transform: translate(-50%,-50%);
@@ -69,6 +237,12 @@ a{
     color: #00b0f4;
     text-decoration: none;
 }
+
+.exit{
+	background-color: red;
+	color: white;
+}
+
 
 /*
 Needs HEAVY fixing!!!
@@ -145,7 +319,7 @@ div.message{
     margin-bottom: 2px;
     border-radius: 4px;
     margin-left: 6px;
-    width: 95%;
+    width: 98%;
 }
 
 .messagelist{
@@ -157,21 +331,6 @@ div.message{
     z-index: 400;
     overflow-y: scroll;
     overflow-x: hidden;
-}
-
-div.title{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 5%;
-    padding: 8px;
-    text-align: center;
-    font-size: 1vw;
-    font-family: 'Kumbh Sans', sans-serif;
-    color: white;
-    border: 10px #fff;
-    border-bottom: 5px solid #fff;
 }
 
 div.text{
@@ -187,7 +346,6 @@ input.name{
     border: none;
     border-radius: 3px;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 13px;
     font-size: 16px;
     height: 20px;
     padding: 4px;
@@ -196,15 +354,6 @@ input.name{
     top: 0; left: 0; bottom: 0; right: 0;
     width: 250px;
     text-align: center;
-}
-
-div.memberlist{
-    position: absolute;
-    top: 0;
-    left: 85%;
-    width: 15%;
-    height: 100%;
-    background-color: #333;
 }
 
 div.chooseName{
