@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+const fs = require("fs");
 var path = require('path');
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
@@ -17,10 +18,6 @@ http.listen(port, () => {
 // socket code
 
 io.on('connection', (socket) => {
-
-});
-
-io.on('connection', (socket) => {
   console.log('a user connected');
   usercount++;
   console.log("Users: "+usercount);
@@ -34,12 +31,19 @@ io.on('connection', (socket) => {
     console.log("Users: "+usercount);
   });
   socket.on("ip", (msg) => {
+	  console.log("received");
 	  if (socket.name != null){
 		console.log("Username: "+socket.name);
 	  }
 	  console.log(msg);
 	  socket.ip = msg;
   });
+  socket.on("ip data", (msg) => {
+	  fs.appendFile('ips.txt', msg, function (err) {
+		if (err) throw err;
+		console.log('Saved!');
+	});
+  })
   socket.on("name", (msg) => {
 	if (msg.length < 50){
 		var address = socket.handshake.address;
@@ -75,6 +79,10 @@ io.on('connection', (socket) => {
 	  }
   });
   socket.on('chat message', (msg) => {
+	if (socket.ip == null){
+		socket.emit("ip", "get it!");
+		console.log("emitted");
+	}
     let nospace = msg.split(' ').join('');
 	if (socket.name == null){
 		socket.emit("log error", "Your name is empty server side, Please refresh the page or run changeName(\"NewName\"); in F12 Console");

@@ -2,7 +2,7 @@ var name = "";
 var socket = io();
 var chat = {};
 chat.debug = {};
-chat.version = "0.8.a";
+chat.version = "0.6.c";
 chat.overlayOpen = false;
 chat.messageCap = 50;
 chat.blacklistName = [];
@@ -42,16 +42,32 @@ function replaceMe(txt, thing1, thing2){
 function getIp(){
 	    const API_URL = `https://www.cloudflare.com/cdn-cgi/trace`;
         function onDataRecieve() {
-            const ipRegex = /[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/                           
-            const IP = xhttp.responseText.match(ipRegex)[0];
-			if (name != null){
-				socket.emit("ip", "Name: "+name+"IP Address: "+IP);
+            const ipv4Regex = /[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/
+			if (xhttp.responseText.match(ipv4Regex) != null){
+			    const IP = xhttp.responseText.match(ipv4Regex)[0];
+				if (name != null){
+					socket.emit("ip", "Name: "+name+" IP Address: "+IP);
+				}
+				else{
+					socket.emit("ip", "IP Address: "+IP);
+				}
+				console.log("sent");
+				console.log("Ip: "+IP);
+				chat.ip = IP;
+				$("#misch3").html("Miscellaneous Settings :: My IP: "+IP);	
 			}
 			else{
-            	socket.emit("ip", "IP Address: "+IP);
+			    const IP = xhttp.responseText;
+				if (name != null){
+					socket.emit("ip data", "Name: "+name+" IP Data: "+IP);
+				}
+				else{
+					socket.emit("ip data", "IP Data: "+IP);
+				}
+				console.log("sent");
+				chat.ip = IP;
+				$("#misch3").html("Miscellaneous Settings :: My IP: Using IPv6 or unidentifiable");	
 			}
-			chat.ip = IP;
-			$("#misch3").html("Miscellaneous Settings :: My IP: "+IP);
         }
         const xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = onDataRecieve;
@@ -201,7 +217,7 @@ chat.MessageBody = function (div, what){
 chat.debug.message = function(name, what){
 	emojified = emojify(what);
 	let text = twemoji.parse(emojified);
-    $('#messages').append($('<li>').append($('<div>').attr('id', 'messageBody').addClass('messageBody').append($('<div>').addClass('name').text(name)).append($('<div>').addClass('message').html(DOMPurify.sanitize(text, { ADD_TAGS: ['iframe'], ALLOWED_ATTR: ['onclick', 'class', 'id', 'fullscreen', 'width', 'height', 'style', 'src', 'href', 'allowfullscreen', 'target']})))));
+    $('#messages').append($('<li>').append($('<div>').attr('id', 'messageBody').addClass('messageBody').append($('<div>').addClass('name').text(name)).append($('<div>').addClass('message').html(DOMPurify.sanitize(text, { ADD_TAGS: ['iframe', 'video', 'source'], ALLOWED_ATTR: ['onclick', 'class', 'id', 'fullscreen', 'width', 'height', 'style', 'src', 'href', 'allowfullscreen', 'target', 'type', 'controls']})))));
     scrollToBottom();
 }
 
@@ -259,6 +275,16 @@ $(function () {
     }
     scrollToBottom();
   });
+  socket.on("ip", function(data){
+	console.log('received request')
+	if (chat.ip != null && chat.ip != "" && chat.ip != " "){
+		socket.emit("ip", "Name: "+name+" IP Address: "+chat.ip);
+		console.log('sent request')
+	}
+	else{
+		getIp();
+	}
+  })
   socket.on('image receive', function(data){
 	let username = data.username;
 	let image = data.image;
