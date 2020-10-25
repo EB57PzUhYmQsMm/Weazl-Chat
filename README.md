@@ -23,7 +23,12 @@ MP4 Video Link Embedding<br>
 Client Download Link
 Overlays
 Settings
+Emojis
+Blacklisting
+Auto Update
+IP Logging/Blacklisting
 & More
   
 # Notes
 If you do want to use the Download Client feature, and want to make your own electron client before we release ours, Please make sure to have a Application.zip under your htdocs directory
+I added DOMPurify because I noticed an XSS glitch. Since I needed to add link and image html elements, I change the jQuery.text() to .html(), oh boy did this not cause 5 million issues. I have now fixed that and added DOMPurify in for everyone to use
