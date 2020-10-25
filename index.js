@@ -6,10 +6,10 @@ var io = require('socket.io')(http);
 var members = [];
 const port = 3000;
 var usercount = 0;
+
 app.use(express.static(path.join(__dirname, 'htdocs')));
 
-
- http.listen(port, () => {
+http.listen(port, () => {
   console.log('Listening on *:'+port);
 });
 
@@ -17,31 +17,49 @@ app.use(express.static(path.join(__dirname, 'htdocs')));
 // socket code
 
 io.on('connection', (socket) => {
+
+});
+
+io.on('connection', (socket) => {
   console.log('a user connected');
   usercount++;
   console.log("Users: "+usercount);
   socket.on('disconnect', () => {
+	if (socket.name != null){
+		var address = socket.handshake.address;
+		console.log(socket.name+" disconnected from IP: "+address)
+	}
     console.log('user disconnected');
     usercount -= 1;
     console.log("Users: "+usercount);
   });
-});
-
-io.on('connection', (socket) => {
+  socket.on("ip", (msg) => {
+	  if (socket.name != null){
+		console.log("Username: "+socket.name);
+	  }
+	  console.log(msg);
+	  socket.ip = msg;
+  });
   socket.on("name", (msg) => {
-    socket.name = msg;
-    io.emit('log message', socket.name+" has joined the chatroom!");
-    io.emit('log message', "there are now "+usercount+" participant(s)");
+	if (msg.length < 50){
+		var address = socket.handshake.address;
+		console.log(msg+" connected from IP: "+address);
+		socket.name = msg;
+		io.emit('log message', socket.name+" has joined the chatroom!");
+		io.emit('log message', "there are now "+usercount+" participant(s)");
+	}
   })
   socket.on("change name", (name) => {
-    if ((filter(name))){
-      socket.name = name;
-      socket.emit("log message", "{System} Changed your name serverside.");
-    }
-    else{
-      socket.name = "DefaultUser";
-      socket.emit("log error", "{System} Could not change your name since it contains profanity / illegal characters");
-    }
+	if (name.length < 50){
+		if ((filter(name))){
+			socket.name = name;
+			socket.emit("log message", "{System} Changed your name serverside.");
+		}
+		else{
+			socket.name = "DefaultUser";
+			socket.emit("log error", "{System} Could not change your name since it contains profanity / illegal characters");
+		}
+	}
   });
   socket.on('image', (msg) =>{
 	  console.log("Received image..")
@@ -57,28 +75,35 @@ io.on('connection', (socket) => {
 	  }
   });
   socket.on('chat message', (msg) => {
-    let nospace = msg.replace(" ", "");
-    if (msg == ""){
-      socket.emit("log error", "Please type a message.");
-    }
-    else if (nospace == ""){
-      socket.emit("log error", "Please type a proper message.")
-    }
-	else if (socket.name == ""){
+    let nospace = msg.split(' ').join('');
+	if (socket.name == null){
 		socket.emit("log error", "Your name is empty server side, Please refresh the page or run changeName(\"NewName\"); in F12 Console");
 	}
-    else if (msg.length >= 1200){
-      socket.emit("log error", "Character overflow error, please turn down the amount of characters your message is using")
-    }
-    else{
-      io.emit('chat message', {
-        username: socket.name,
-        message: msg
-      });
-    }
-  });
-  socket.on("memberlist", () => {
-    socket.emit(members);
+	else if (socket.name.length > 50){
+		socket.emit("log error", "Your name is too long, run changeName(\"NewName\"); in F12 Console");
+	}
+	else{
+		let cname = socket.name;
+		let nameno = cname.split(' ').join(' ');
+		if (msg == ""){
+		socket.emit("log error", "Please type a message.");
+		}
+		else if (nospace == ""){
+		socket.emit("log error", "Please type a proper message.")
+		}
+		else if (socket.name == ""){
+			socket.emit("log error", "Your name is empty server side, Please refresh the page or run changeName(\"NewName\"); in F12 Console");
+		}
+		else if (msg.length >= 1200){
+		socket.emit("log error", "Character overflow error, please turn down the amount of characters your message is using")
+		}
+		else{
+		io.emit('chat message', {
+			username: socket.name,
+			message: msg
+		});
+		}
+	}
   });
 });
 

@@ -9,6 +9,8 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans&display=swap" rel="stylesheet"> 
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+	<script src = "./assets/dompurify.js"></script>
+	<script src="https://twemoji.maxcdn.com/v/13.0.1/twemoji.min.js" integrity="sha384-5f4X0lBluNY/Ib4VhGx0Pf6iDCF99VGXJIyYy7dDLY5QlEd7Ap0hICSSZA1XYbc4" crossorigin="anonymous"></script>
   </head>
   <body>
     <div id="overlay" onclick="hideOverlay()">
@@ -44,8 +46,20 @@
 		</div>
 
 		<div id="Tokyo" class="tabcontent">
-		<h3>Tokyo</h3>
-		<p>Tokyo is the capital of Japan.</p>
+			<br>
+			<h3 id = "misch3">Miscellaneous Settings</h3>
+			<hr class="hr">
+			<h2>Clear your user chat</h2>
+			<br>
+			<button class = "button full" onclick = "saveSetting('clearChat');">Clear Chat</button>
+			<br>
+			<h2>Disable Notifications</h2>
+			<br>
+			<label class="switch">
+				<input type="checkbox" id = "notificationSwitch">
+				<span class="slider round"></span>
+			</label>
+			<button class = "button full" onclick = "saveSetting('notifications');">Save</button>
 		</div>
 	  </div>
     </div>

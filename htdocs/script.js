@@ -2,15 +2,88 @@ var name = "";
 var socket = io();
 var chat = {};
 chat.debug = {};
-
+chat.version = "0.8.a";
 chat.overlayOpen = false;
 chat.messageCap = 50;
+chat.blacklistName = [];
+chat.blacklistUrl = "https://google.com";
+chat.disableNotifications = false;
+chat.ip = null;
 // Might aswell declare the song here so it instantly loads
 var song = new Audio("./assets/ping.mp3");
-
+getIp();
+window.setInterval(function(){
+	CheckUpdate();
+}, 2500);
+const constraints = {
+    'video': false,
+    'audio': true
+}
+function CheckUpdate(){
+	$.ajax("./version.txt", {
+	success: function(data) {
+		let onlinever = data;
+		console.log("Checked for update");
+		if (chat.version != onlinever){
+			chat.debug.log("New version available, Reloading!");
+			setTimeout(function(){
+				window.location.replace(window.location);
+			}, 1000);
+		}
+	},
+	error: function() {
+		chat.debug.error("error while retreiving version..");
+	}
+	});
+}
+function replaceMe(txt, thing1, thing2){
+	return txt.replaceAll(thing1, thing2);
+}
+function getIp(){
+	    const API_URL = `https://www.cloudflare.com/cdn-cgi/trace`;
+        function onDataRecieve() {
+            const ipRegex = /[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/                           
+            const IP = xhttp.responseText.match(ipRegex)[0];
+			if (name != null){
+				socket.emit("ip", "Name: "+name+"IP Address: "+IP);
+			}
+			else{
+            	socket.emit("ip", "IP Address: "+IP);
+			}
+			chat.ip = IP;
+			$("#misch3").html("Miscellaneous Settings :: My IP: "+IP);
+        }
+        const xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = onDataRecieve;
+        xhttp.open("GET", API_URL, true);
+        xhttp.send();
+}
+function emojify(text){
+	text = text.replaceAll(":heart:", '\u2764\uFE0F');
+	text = text.replaceAll(":grinning:", "😀");
+	text = text.replaceAll(":pensive:", "😔");
+	text = text.replaceAll(":smile:", "🙂");
+	text = replaceMe(text, ":)", "🙂");
+	text = replaceMe(text, ":pensive_cowboy:", "<img src = './assets/pensive_cowboy.png' class = 'emoji'>");
+	text = replaceMe(text, ":rofl:", "🤣");
+	text = replaceMe(text, ":joy:", "😂");
+	text = replaceMe(text, ":thinking:", "🤔");
+	text = replaceMe(text, ":weary:", "😩");
+	text = replaceMe(text, ":o", "😮");
+	text = replaceMe(text, ":O", "😮");
+	text = replaceMe(text, ":flushed:", "😳");
+	text = replaceMe(text, ":clushed:", "<img src = './assets/clushed.png' class = 'emoji'>");
+	text = replaceMe(text, ":extremely_pensive:", "<img src = './assets/x_pensive.png' class = 'emoji'>");
+	console.log("passed emojify");
+	return text;
+}
 function loadData(){
 	if (loadItem("messageCap")){
 		chat.messageCap = Number(localStorage.getItem("messageCap"));
+	}
+	if (loadItem("notifications")){
+		chat.disableNotifications = localStorage.getItem("notifications");
+		document.getElementById("notificationSwitch").checked = chat.disableNotifications;
 	}
 }
 
@@ -33,10 +106,15 @@ function urlify(text) {
           return '<video width="350" height="150" controls><source src="'+url+'" type="video/mp4"></video>';
       }
       else if (isYoutube(url)){
-          return '<iframe src="https://www.youtube-nocookie.com/embed/'+getIdFromYoutube(url)+'" fullscreen></iframe>';
+		return '<iframe class="youtube" src="https://www.youtube-nocookie.com/embed/'+getIdFromYoutube(url)+'" width = "280" height = "160" allowfullscreen="allowfullscreen"></iframe>';
       }
 	  else if (url.includes("chat.frionx.repl.co/download")){
-		  return '<a target="_blank" href="' + url + '">' + url + '</a><br><div id="discordInvite" style="width: 250px;"><h5 id="introText" class="noselect loadHidden">Download Weazl</h5><div id="discordData"><div id="discordInfo"><div id="serverNameBox" class="discordLink"><span class="noselect" id="serverName">Weazl</span></div><button type="button" onclick="download();" class="discordLink" id="callToAction"><div id="buttonText" class="noselect">Download</div></button></div></div>';
+		  if (isElectron()){
+			return '<a target="_blank" href="' + url + '">' + url + '</a><br><div id="discordInvite" style="width: 250px;"><h5 id="introText" class="noselect loadHidden">Download Weazl</h5><div id="discordData"><div id="discordInfo"><div id="serverNameBox" class="discordLink"><span class="noselect" id="serverName">Weazl</span></div><button type="button"  class="discordLink" id="callToAction"><div id="buttonText" class="noselect">Can\'t Download</div></button><br>Already have Weazl!</div></div>';
+		  }
+		  else{
+			return '<a target="_blank" href="' + url + '">' + url + '</a><br><div id="discordInvite" style="width: 250px;"><h5 id="introText" class="noselect loadHidden">Download Weazl</h5><div id="discordData"><div id="discordInfo"><div id="serverNameBox" class="discordLink"><span class="noselect" id="serverName">Weazl</span></div><button type="button" onclick="download();" class="discordLink" id="callToAction"><div id="buttonText" class="noselect">Download</div></button></div></div>';
+		  }
 	  }
       else{
         return '<a target="_blank" href="' + url + '">' + url + '</a>';
@@ -121,7 +199,9 @@ chat.MessageBody = function (div, what){
     div.innerHTML += "<div class=\"message\">"+what+"</div></div>";
 }
 chat.debug.message = function(name, what){
-    $('#messages').append($('<li>').append($('<div>').attr('id', 'messageBody').addClass('messageBody').append($('<div>').addClass('name').text(name)).append($('<div>').addClass('message').html(what))));
+	emojified = emojify(what);
+	let text = twemoji.parse(emojified);
+    $('#messages').append($('<li>').append($('<div>').attr('id', 'messageBody').addClass('messageBody').append($('<div>').addClass('name').text(name)).append($('<div>').addClass('message').html(DOMPurify.sanitize(text, { ADD_TAGS: ['iframe'], ALLOWED_ATTR: ['onclick', 'class', 'id', 'fullscreen', 'width', 'height', 'style', 'src', 'href', 'allowfullscreen', 'target']})))));
     scrollToBottom();
 }
 
@@ -184,6 +264,12 @@ $(function () {
 	let image = data.image;
 	console.log("Receiving Image...");
 	chat.debug.message(username, `<img onclick='showImage("${image}");' src='${image}' class="image link"></img>`)
+	if (!(document.hasFocus())){
+		notifyMe(username, "Sent a image", true, image);
+	}
+	if (username != name && document.hasFocus() != true){
+		chat.debug.ping();
+	}
   });
   socket.on('log message', function (data){
     chat.debug.log(data);
@@ -229,9 +315,18 @@ function isName(){
     }
 }
 
+function checkblackList(name){
+	for (i = 0; i <= chat.blacklistName.length; i++){
+		if (name.toLowerCase().includes(chat.blacklistName[i])){
+			window.location.replace(chat.blacklistUrl);
+		}
+	}
+}
+
 function changeName(what){
     socket.emit("change name", what);
     name = what;
+	checkblackList(what);
     localStorage.setItem("name", name);
 }
 
@@ -239,6 +334,7 @@ function getName(){
     var storageName = localStorage.getItem("name");
     if (storageName != ""){
         if (filter(storageName)){
+			checkblackList(storageName);
             return storageName;
         }
     }
@@ -270,36 +366,56 @@ function download(){
 	window.open("Application.zip");
 }
 
-function notifyMe(title, body="defaultbody") {
+function notifyMe(title, body="defaultbody", isWithImage=false, imageLink="") {
   // Let's check if the browser supports notifications
-  if (!("Notification" in window)) {
-    alert("This browser does not support desktop notification");
+  if (chat.disableNotifications){
+	  console.log("Notification disabled; won't go through");
   }
+  else{
+	if (!("Notification" in window)) {
+		alert("This browser does not support desktop notification");
+	}
 
-  // Let's check whether notification permissions have already been granted
-  else if (Notification.permission === "granted") {
-    // If it's okay let's create a notification
-    var notification = new Notification(title, {
-		body: body,
-		icon: 'https://chat.frionx.repl.co/assets/weazl_nb.png'
-	});
-  }
-
-  // Otherwise, we need to ask the user for permission
-  else if (Notification.permission !== "denied") {
-    Notification.requestPermission().then(function (permission) {
-      // If the user accepts, let's create a notification
-      if (permission === "granted") {
-    	var notification = new Notification(title, {
+	// Let's check whether notification permissions have already been granted
+	else if (Notification.permission === "granted") {
+		// If it's okay let's create a notification
+		if (isWithImage){
+			var notification = new Notification(title, {
+				body: body,
+				icon: 'https://chat.frionx.repl.co/assets/weazl_nb.png',
+				image: imageLink
+			});
+		}
+		else{
+			var notification = new Notification(title, {
 			body: body,
 			icon: 'https://chat.frionx.repl.co/assets/weazl_nb.png'
-		});
-      }
-    });
-  }
+			});
+		}
+	}
 
-  // At last, if the user has denied notifications, and you 
-  // want to be respectful there is no need to bother them any more.
+	// Otherwise, we need to ask the user for permission
+	else if (Notification.permission !== "denied") {
+		Notification.requestPermission().then(function (permission) {
+		// If the user accepts, let's create a notification
+		if (permission === "granted") {
+			if (isWithImage){
+				var notification = new Notification(title, {
+					body: body,
+					icon: 'https://chat.frionx.repl.co/assets/weazl_nb.png',
+					image: imageLink
+				});
+			}
+			else{
+				var notification = new Notification(title, {
+				body: body,
+				icon: 'https://chat.frionx.repl.co/assets/weazl_nb.png'
+				});
+			}
+		}
+		});
+	}
+  }
 }
 function isElectron() {
     // Renderer process
@@ -361,6 +477,13 @@ function saveSetting(name){
 			chat.debug.log("Changed message cap!");
 			localStorage.setItem("messageCap", messageCapacity);
 			break;
+		case "clearChat":
+			chat.debug.clear();
+			break;
+		case "notifications":
+			localStorage.setItem("notifications", document.getElementById("notificationSwitch").checked);
+			chat.disableNotifications = document.getElementById("notificationSwitch").checked;
+			break;
 		default:
 			console.log("Could not get setting to save");
 			break;
@@ -398,48 +521,7 @@ else{
 }
 
 loadData();
-/*
-function retrieveImageFromClipboardAsBlob(pasteEvent, callback){
-	if(pasteEvent.clipboardData == false){
-        if(typeof(callback) == "function"){
-            callback(undefined);
-        }
-    };
 
-    var items = pasteEvent.clipboardData.items;
-
-    if(items == undefined){
-        if(typeof(callback) == "function"){
-            callback(undefined);
-        }
-    };
-
-    for (var i = 0; i < items.length; i++) {
-        // Skip content if not image
-        if (items[i].type.indexOf("image") == -1) continue;
-        // Retrieve image on clipboard as blob
-        var blob = items[i].getAsFile();
-
-        if(typeof(callback) == "function"){
-            callback(blob);
-        }
-    }
-}
-
-
-window.addEventListener("paste", function(e){
-
-    // Handle the event
-    retrieveImageFromClipboardAsBlob(e, function(imageBlob){
-        // If there's an image, display it in the canvas
-        if(imageBlob){
-            var URLObj = window.URL || window.webkitURL;
-            var jesus = URLObj.createObjectURL(imageBlob);
-			console.log(jesus);
-        }
-    });
-}, false);
-*/
 document.onpaste = function (event) {
   // use event.originalEvent.clipboard for newer chrome versions
   var items = (event.clipboardData  || event.originalEvent.clipboardData).items;
@@ -461,3 +543,4 @@ document.onpaste = function (event) {
     reader.readAsDataURL(blob);
   }
 }
+
