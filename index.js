@@ -51,6 +51,9 @@ io.on('connection', (socket) => {
     else if (nospace == ""){
       socket.emit("log error", "Please type a proper message.")
     }
+	else if (socket.name == ""){
+		socket.emit("log error", "Your name is empty server side, Please refresh the page or run changeName(\"NewName\"); in F12 Console");
+	}
     else if (msg.length >= 1200){
       socket.emit("log error", "Character overflow error, please turn down the amount of characters your message is using")
     }
