@@ -11,7 +11,7 @@ Look for new issues or improvements in the code (A lot are available right now)
 Uses Express for sending webpages (Anything under htdocs) and uses SOCKET.IO for networking & communication
 
 # Features
-Link support (adding auto <a> tags and href + opens in a new tab because of target=_blank<br>
+Link support (adding auto <a> tags and href + opens in a new tab because of target=_blank<br>)
 Message Limits (Character Limits)<br>
 Message Cleanup (deletes divs that user probably doesnt need to save memory)<br>
 Basic Name Changing (through console atm) and Name Choosing features<br>
