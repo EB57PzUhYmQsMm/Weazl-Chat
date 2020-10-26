@@ -1,36 +1,25 @@
 ## Weazl Chat
-You can use the [editor on GitHub](https://github.com/WeaselStudios/Weazl-Chat/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-
+The server & site for Weazl Chat.
 ### Markdown
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+# How to connect
+Simply type localhost in your browser to test your code out or if you want to connect to multiple sockets just edit script.js and choose the socket url
+# Contributing
+Look for new issues or improvements in the code (A lot are available right now)
+# Dependencies
+Uses Express for sending webpages (Anything under htdocs) and uses SOCKET.IO for networking & communication
 
-```markdown
-Syntax highlighted code block
+# Features
+- Link support (adding auto tags and href + opens in a new tab because of target=_blank)
+- Message Limits (Character Limits)
+- Message Cleanup (deletes divs that user probably doesnt need to save memory)
+- Basic Name Changing (through console atm) and Name Choosing features
+- Basic Error and System Message logging
+- Basic Name Filter
+- Basic Space Filter (Invisible Names / Messages)
+- Youtube Video Embedding
+- MP4 Video Link Embedding
+- Client Download Link Overlays Settings Emojis Blacklisting Auto Update IP Logging/Blacklisting & More
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/WeaselStudios/Weazl-Chat/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+# Notes
+If you do want to use the Download Client feature, and want to make your own electron client before we release ours, Please make sure to have a Application.zip under your htdocs directory I added DOMPurify because I noticed an XSS glitch. Since I needed to add link and image html elements, I change the jQuery.text() to .html(), oh boy did this not cause 5 million issues. I have now fixed that and added DOMPurify in for everyone to use
