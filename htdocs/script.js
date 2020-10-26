@@ -2,7 +2,7 @@ var name = "";
 var socket = io();
 var chat = {};
 chat.debug = {};
-chat.version = "0.6.c";
+chat.version = "0.6.d";
 chat.overlayOpen = false;
 chat.messageCap = 50;
 chat.blacklistName = [];
@@ -296,6 +296,7 @@ $(function () {
 	if (username != name && document.hasFocus() != true){
 		chat.debug.ping();
 	}
+	capMessages();
   });
   socket.on('log message', function (data){
     chat.debug.log(data);
