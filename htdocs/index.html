@@ -1,20 +1,31 @@
 <!doctype html>
 <html>
-  <head>
-    <title>Weazl Chat</title>
-    <link href = "style.css" rel = "stylesheet">
-	<link href = "discord-colors.css" rel = "stylesheet">
-	<link  id="pingFavicon" rel="shortcut icon" type="image/x-icon" href="/assets/icons/default_favicon.ico"/>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans&display=swap" rel="stylesheet"> 
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-	<script src = "./assets/dompurify.js"></script>
-	<script src="https://twemoji.maxcdn.com/v/13.0.1/twemoji.min.js" integrity="sha384-5f4X0lBluNY/Ib4VhGx0Pf6iDCF99VGXJIyYy7dDLY5QlEd7Ap0hICSSZA1XYbc4" crossorigin="anonymous"></script>
-  </head>
-  <body>
-    <div id="overlay" onclick="hideOverlay()">
-      <img src = "" class = "overlayImage" id="overlayContainer"></img>
+
+<head>
+	<title>Weazl Chat</title>
+	<link href="style.css" rel="stylesheet">
+	<link href="discord-colors.css" rel="stylesheet">
+	<link id="pingFavicon" rel="shortcut icon" type="image/x-icon" href="/assets/icons/default_favicon.ico" />
+	<script src="/socket.io/socket.io.js">
+
+	</script>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js">
+
+	</script>
+	<link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+	<script src="./assets/dompurify.js">
+
+	</script>
+	<script src="https://twemoji.maxcdn.com/v/13.0.1/twemoji.min.js" integrity="sha384-5f4X0lBluNY/Ib4VhGx0Pf6iDCF99VGXJIyYy7dDLY5QlEd7Ap0hICSSZA1XYbc4"
+	 crossorigin="anonymous">
+
+	</script>
+</head>
+
+<body>
+	<div id="overlay" onclick="hideOverlay()">
+		<img src = "" class = "overlayImage" id="overlayContainer"></img>
     </div>
 	<div id="overlaySettings">
 	  <div class = "overlayDiv">
@@ -43,6 +54,14 @@
 			<br>
 			<input type = "text" class = "textbox" id = "messageCap">
 			<button class = "button full" onclick = "saveSetting('messageCap');">Save</button>
+      <hr class="hr">
+			<h2>Disable Emojify</h2>
+			<br>
+			<label class="switch">
+				<input type="checkbox" id = "emojifySwitch">
+				<span class="slider round"></span>
+			</label>
+			<button class = "button full" onclick = "saveSetting('emojify');">Save</button>
 		</div>
 
 		<div id="Tokyo" class="tabcontent">
