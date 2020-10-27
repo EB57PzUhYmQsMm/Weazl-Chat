@@ -8,6 +8,7 @@ chat.messageCap = 50;
 chat.blacklistName = [];
 chat.blacklistUrl = "https://google.com";
 chat.disableNotifications = false;
+chat.disableEmojify = false;
 chat.ip = null;
 // Might aswell declare the song here so it instantly loads
 var song = new Audio("./assets/ping.mp3");
@@ -75,23 +76,34 @@ function getIp() {
   xhttp.send();
 }
 function emojify(text) {
-  text = text.replaceAll(":heart:", '\u2764\uFE0F');
-  text = text.replaceAll(":grinning:", "😀");
-  text = text.replaceAll(":pensive:", "😔");
-  text = text.replaceAll(":smile:", "🙂");
-  text = replaceMe(text, ":)", "🙂");
-  text = replaceMe(text, ":pensive_cowboy:", "<img src = './assets/pensive_cowboy.png' class = 'emoji'>");
-  text = replaceMe(text, ":rofl:", "🤣");
-  text = replaceMe(text, ":joy:", "😂");
-  text = replaceMe(text, ":thinking:", "🤔");
-  text = replaceMe(text, ":weary:", "😩");
-  text = replaceMe(text, ":o", "😮");
-  text = replaceMe(text, ":O", "😮");
-  text = replaceMe(text, ":flushed:", "😳");
-  text = replaceMe(text, ":clushed:", "<img src = './assets/clushed.png' class = 'emoji'>");
-  text = replaceMe(text, ":extremely_pensive:", "<img src = './assets/x_pensive.png' class = 'emoji'>");
-  console.log("passed emojify");
-  return text;
+  if (chat.disableEmojify) {
+    return text;
+  }
+  else {
+    text = text.replaceAll(":heart:", '\u2764\uFE0F');
+    text = text.replaceAll(":grinning:", "😀");
+    text = text.replaceAll(":pensive:", "😔");
+    text = text.replaceAll(":smile:", "🙂");
+    text = replaceMe(text, ":)", "🙂");
+    text = replaceMe(text, ":pensive_cowboy:", "<img src = './assets/emojis/pensive_cowboy.png' class = 'emoji'>");
+    text = replaceMe(text, ":rofl:", "🤣");
+    text = replaceMe(text, ":joy:", "😂");
+    text = replaceMe(text, ":thinking:", "🤔");
+    text = replaceMe(text, ":weary:", "😩");
+    text = replaceMe(text, ":o", "😮");
+    text = replaceMe(text, ":O", "😮");
+    text = replaceMe(text, ":flushed:", "😳");
+    text = replaceMe(text, ":weary:", "😩");
+    text = replaceMe(text, ":canned_food:", "🥫");
+    text = replaceMe(text, ":weary:", "😩");
+    text = replaceMe(text, ":clushed:", "<img src = './assets/emojis/clushed.png' class = 'emoji'>");
+    text = replaceMe(text, ":extremely_pensive:", "<img src = './assets/x_pensive.png' class = 'emoji'>");
+    text = replaceMe(text, ":weazl:", "<img src = './assets/emojis/weazl_nb.png' class = 'emoji'>");
+    text = replaceMe(text, ":ping_b:", "<img src = './assets/emojis/ping_blank.png' class = 'emoji'>");
+    text = replaceMe(text, ":ping:", "<img src = './assets/emojis/ping_excm.png' class = 'emoji'>");
+    console.log("passed emojify");
+    return text;
+  }
 }
 function loadData() {
   if (loadItem("messageCap")) {
@@ -101,6 +113,11 @@ function loadData() {
     chat.disableNotifications = localStorage.getItem("notifications");
     document.getElementById("notificationSwitch").checked = chat.disableNotifications;
   }
+  if (loadItem("emojify")) {
+    chat.disableEmojify = localStorage.getItem("emojify");
+    document.getElementById("emojifySwitch").checked = chat.disableEmojify;
+  }
+
 }
 
 function loadItem(name) {
@@ -229,9 +246,9 @@ chat.debug.clear = function() {
   console.log("Cleared messages");
 }
 
-function scrollToBottom(){
-    var objDiv = document.getElementById("messagelist");
-    objDiv.scrollTop = objDiv.scrollHeight;
+function scrollToBottom() {
+  var objDiv = document.getElementById("messagelist");
+  objDiv.scrollTop = objDiv.scrollHeight;
 }
 
 $(function() {
@@ -326,61 +343,60 @@ function capMessages() {
 }
 
 function changeFavicon(src) {
- let link = document.createElement('link'),
- oldLink = document.getElementById('pingFavicon');
- link.id = 'pingFavicon';
- link.rel = 'shortcut icon';
- link.href = src;
- if (oldLink) {
-  document.head.removeChild(oldLink);
- }
- document.head.appendChild(link);
+  let link = document.createElement('link'),
+    oldLink = document.getElementById('pingFavicon');
+  link.id = 'pingFavicon';
+  link.rel = 'shortcut icon';
+  link.href = src;
+  if (oldLink) {
+    document.head.removeChild(oldLink);
+  }
+  document.head.appendChild(link);
 }
 
 var unreadMessages = 0;
 
 function unreadMessage() {
-  switch(unreadMessages) {
+  switch (unreadMessages) {
     case 0:
-		changeFavicon('/assets/icons/default_favicon.ico');
-		break;
+      changeFavicon('/assets/icons/default_favicon.ico');
+      break;
     case 1:
-		changeFavicon('/assets/icons/Ping_1.ico');
-		break;
+      changeFavicon('/assets/icons/Ping_1.ico');
+      break;
     case 2:
-		changeFavicon('/assets/icons/Ping_2.ico');
-		break;
+      changeFavicon('/assets/icons/Ping_2.ico');
+      break;
     case 3:
-		changeFavicon('/assets/icons/ping_3.ico');
-		break;
+      changeFavicon('/assets/icons/ping_3.ico');
+      break;
     case 4:
-		changeFavicon('/assets/icons/ping_4.ico');
-		break;
+      changeFavicon('/assets/icons/ping_4.ico');
+      break;
     case 5:
-		changeFavicon('/assets/icons/ping_5.ico');
-		break;
+      changeFavicon('/assets/icons/ping_5.ico');
+      break;
     case 6:
-		changeFavicon('/assets/icons/Ping_6.ico');
-		break;
+      changeFavicon('/assets/icons/Ping_6.ico');
+      break;
     case 7:
-		changeFavicon('/assets/icons/ping_7.ico');
-		break;
+      changeFavicon('/assets/icons/ping_7.ico');
+      break;
     case 8:
-		changeFavicon('/assets/icons/ping_8.ico');
-		break;
+      changeFavicon('/assets/icons/ping_8.ico');
+      break;
     case 9:
-		changeFavicon('/assets/icons/ping_9.ico');
-		break;
-	default:
-		if (unreadMessages > 9 ) {
-			changeFavicon('/assets/icons/ping_9p.ico')
-		}		
-		break;
+      changeFavicon('/assets/icons/ping_9.ico');
+      break;
+    default:
+      if (unreadMessages > 9) {
+        changeFavicon('/assets/icons/ping_9p.ico')
+      }
+      break;
   }
 }
 
 function readMessages() {
-  console.log(unreadMessages)
   unreadMessages = 0;
   unreadMessage();
 }
@@ -538,7 +554,7 @@ if (isName()) {
   socket.emit("name", name);
 }
 
-window.onfocus = function(){
+window.onfocus = function() {
   readMessages();
 };
 
@@ -581,6 +597,12 @@ function saveSetting(name) {
     case "notifications":
       localStorage.setItem("notifications", document.getElementById("notificationSwitch").checked);
       chat.disableNotifications = document.getElementById("notificationSwitch").checked;
+      chat.debug.log("Disable Notifications set to " + chat.disableNotifications);
+      break;
+    case "emojify":
+      localStorage.setItem("emojify", document.getElementById("emojifySwitch").checked);
+      chat.disableEmojify = document.getElementById("emojifySwitch").checked;
+      chat.debug.log("Disable Emojify set to " + chat.disableEmojify);
       break;
     default:
       console.log("Could not get setting to save");
