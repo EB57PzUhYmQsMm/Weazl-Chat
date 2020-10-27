@@ -1,4 +1,5 @@
 var express = require('express');
+//require("./database.js");
 var app = express();
 const fs = require("fs");
 var path = require('path');
@@ -14,7 +15,6 @@ app.use(express.static(path.join(__dirname, 'htdocs')));
 http.listen(port, () => {
   console.log('Listening on *:'+port);
 });
-
 
 // socket code
 
@@ -51,8 +51,6 @@ io.on('connection', (socket) => {
   })
   socket.on("name", (msg) => {
 	if (msg.length < 50){
-		var address = socket.handshake.address;
-		console.log(msg+" connected from IP: "+address);
 		socket.name = msg;
 		io.emit('log message', socket.name+" has joined the chatroom!");
 		io.emit('log message', "there are now "+usercount+" participant(s)");
@@ -92,12 +90,15 @@ io.on('connection', (socket) => {
 	if (socket.name == null && logIp){
 		socket.emit("log error", "Your name is empty server side, Please refresh the page or run changeName(\"NewName\"); in F12 Console");
 	}
-	else if (socket.name.length > 50){
+	else if (socket.name != null && socket.name != "" && socket.name.length > 50){
 		socket.emit("log error", "Your name is too long, run changeName(\"NewName\"); in F12 Console");
 	}
 	else{
 		let cname = socket.name;
-		let nameno = cname.split(' ').join(' ');
+		let nameno; 
+		if (socket.name != null && socket.name != ""){
+			nameno = cname.split(' ').join(' ');
+		}
 		if (msg == ""){
 		socket.emit("log error", "Please type a message.");
 		}
