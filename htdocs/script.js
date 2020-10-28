@@ -8,6 +8,7 @@ chat.messageCap = 50;
 chat.blacklistName = [];
 chat.blacklistUrl = "https://google.com";
 chat.disableNotifications = false;
+chat.disableEmojify = false;
 chat.ip = null;
 // Might aswell declare the song here so it instantly loads
 var song = new Audio("./assets/ping.mp3");
@@ -75,23 +76,56 @@ function getIp() {
   xhttp.send();
 }
 function emojify(text) {
-  text = text.replaceAll(":heart:", '\u2764\uFE0F');
-  text = text.replaceAll(":grinning:", "😀");
-  text = text.replaceAll(":pensive:", "😔");
-  text = text.replaceAll(":smile:", "🙂");
-  text = replaceMe(text, ":)", "🙂");
-  text = replaceMe(text, ":pensive_cowboy:", "<img src = './assets/pensive_cowboy.png' class = 'emoji'>");
-  text = replaceMe(text, ":rofl:", "🤣");
-  text = replaceMe(text, ":joy:", "😂");
-  text = replaceMe(text, ":thinking:", "🤔");
-  text = replaceMe(text, ":weary:", "😩");
-  text = replaceMe(text, ":o", "😮");
-  text = replaceMe(text, ":O", "😮");
-  text = replaceMe(text, ":flushed:", "😳");
-  text = replaceMe(text, ":clushed:", "<img src = './assets/clushed.png' class = 'emoji'>");
-  text = replaceMe(text, ":extremely_pensive:", "<img src = './assets/x_pensive.png' class = 'emoji'>");
-  console.log("passed emojify");
-  return text;
+  if (chat.disableEmojify) {
+    return text;
+  }
+  else {
+    const emojis = {
+      ":heart:": "\u2764\uFE0F",
+      ":grinning:": "😀",
+      ":pensive:": "😔",
+      ":smile:": "🙂",
+      ":)": "🙂",
+      ":pensive_cowboy:": "<img src = './assets/emojis/pensive_cowboy.png' class = 'emoji'>",
+      ":rofl:": "🤣",
+      ":joy:": "😂",
+      ":thinking:": "🤔",
+      ":weary:": "😩",
+      ":o": "😮",
+      ":O": "😮",
+      ":flushed:": "😳",
+      ":weary:": "😩",
+      ":canned_food:": "🥫",
+      ":clushed:": "<img src = './assets/emojis/clushed.png' class = 'emoji'>",
+      ":extremely_pensive:": "<img src = './assets/emojis/extremely_pensive.png' class = 'emoji'>",
+      ":weazl:": "<img src = './assets/emojis/weazl_nb.png' class = 'emoji'>",
+      ":ping_b:": "<img src = './assets/emojis/ping_blank.png' class = 'emoji'>",
+      ":ping:": "<img src = './assets/emojis/ping_excm.png' class = 'emoji'>",
+      ":blob_muscles:": "<img src = './assets/emojis/blob_muscles.png' class = 'emoji'>",
+      ":blob_ross:": "<img src = './assets/emojis/blob_ross.png' class = 'emoji'>",
+      ":chill:": "<img src = './assets/emojis/chill.png' class = 'emoji'>",
+      ":cronge:": "<img src = './assets/emojis/cronge.png' class = 'emoji'>",
+      ":crying_sunglasses:": "<img src = './assets/emojis/crying_sunglasses.png' class = 'emoji'>",
+      ":cursed_flooshed:": "<img src = './assets/emojis/cursed_flooshed.png' class = 'emoji'>",
+      ":FLOOOOOOOOSHED:": "<img src = './assets/emojis/FLOOOOOOOOSHED.png' class = 'emoji'>",
+      ":i_am_watching:": "<img src = './assets/emojis/i_am_watching.png' class = 'emoji'>",
+      ":lauff:": "<img src = './assets/emojis/lauff.png' class = 'emoji'>",
+      ":monke_christ:": "<img src = './assets/emojis/monke_christ.png' class = 'emoji'>",
+      ":ok_drops:": "<img src = './assets/emojis/ok_drops.png' class = 'emoji'>",
+      ":pensive_clown:": "<img src = './assets/emojis/pensive_clown.png' class = 'emoji'>",
+      ":plushed_flushed:": "<img src = './assets/emojis/plushed_flushed.png' class = 'emoji'>",
+      ":reddit_silver:": "<img src = './assets/emojis/reddit_silver.png' class = 'emoji'>",
+      ":squished_flushed:": "<img src = './assets/emojis/squished_flushed.png' class = 'emoji'>",
+      ":sunglasses_down:": "<img src = './assets/emojis/sunglasses_down.png' class = 'emoji'>",
+      ":thonk:": "<img src = './assets/emojis/thonk.png' class = 'emoji'>",
+      ":sunglasses:": "😎"
+    };
+    for (const [key, value] of Object.entries(emojis)) {
+      text = replaceMe(text, key, value);
+    }
+    console.log("passed emojify");
+    return text;
+  }
 }
 function loadData() {
   if (loadItem("messageCap")) {
@@ -101,6 +135,11 @@ function loadData() {
     chat.disableNotifications = localStorage.getItem("notifications");
     document.getElementById("notificationSwitch").checked = chat.disableNotifications;
   }
+  if (loadItem("emojify")) {
+    chat.disableEmojify = localStorage.getItem("emojify");
+    document.getElementById("emojifySwitch").checked = chat.disableEmojify;
+  }
+
 }
 
 function loadItem(name) {
@@ -229,9 +268,9 @@ chat.debug.clear = function() {
   console.log("Cleared messages");
 }
 
-function scrollToBottom(){
-    var objDiv = document.getElementById("messagelist");
-    objDiv.scrollTop = objDiv.scrollHeight;
+function scrollToBottom() {
+  var objDiv = document.getElementById("messagelist");
+  objDiv.scrollTop = objDiv.scrollHeight;
 }
 
 $(function() {
@@ -326,61 +365,60 @@ function capMessages() {
 }
 
 function changeFavicon(src) {
- let link = document.createElement('link'),
- oldLink = document.getElementById('pingFavicon');
- link.id = 'pingFavicon';
- link.rel = 'shortcut icon';
- link.href = src;
- if (oldLink) {
-  document.head.removeChild(oldLink);
- }
- document.head.appendChild(link);
+  let link = document.createElement('link'),
+    oldLink = document.getElementById('pingFavicon');
+  link.id = 'pingFavicon';
+  link.rel = 'shortcut icon';
+  link.href = src;
+  if (oldLink) {
+    document.head.removeChild(oldLink);
+  }
+  document.head.appendChild(link);
 }
 
 var unreadMessages = 0;
 
 function unreadMessage() {
-  switch(unreadMessages) {
+  switch (unreadMessages) {
     case 0:
-		changeFavicon('/assets/icons/default_favicon.ico');
-		break;
+      changeFavicon('/assets/icons/default_favicon.ico');
+      break;
     case 1:
-		changeFavicon('/assets/icons/Ping_1.ico');
-		break;
+      changeFavicon('/assets/icons/Ping_1.ico');
+      break;
     case 2:
-		changeFavicon('/assets/icons/Ping_2.ico');
-		break;
+      changeFavicon('/assets/icons/Ping_2.ico');
+      break;
     case 3:
-		changeFavicon('/assets/icons/ping_3.ico');
-		break;
+      changeFavicon('/assets/icons/ping_3.ico');
+      break;
     case 4:
-		changeFavicon('/assets/icons/ping_4.ico');
-		break;
+      changeFavicon('/assets/icons/ping_4.ico');
+      break;
     case 5:
-		changeFavicon('/assets/icons/ping_5.ico');
-		break;
+      changeFavicon('/assets/icons/ping_5.ico');
+      break;
     case 6:
-		changeFavicon('/assets/icons/Ping_6.ico');
-		break;
+      changeFavicon('/assets/icons/Ping_6.ico');
+      break;
     case 7:
-		changeFavicon('/assets/icons/ping_7.ico');
-		break;
+      changeFavicon('/assets/icons/ping_7.ico');
+      break;
     case 8:
-		changeFavicon('/assets/icons/ping_8.ico');
-		break;
+      changeFavicon('/assets/icons/ping_8.ico');
+      break;
     case 9:
-		changeFavicon('/assets/icons/ping_9.ico');
-		break;
-	default:
-		if (unreadMessages > 9 ) {
-			changeFavicon('/assets/icons/ping_9p.ico')
-		}		
-		break;
+      changeFavicon('/assets/icons/ping_9.ico');
+      break;
+    default:
+      if (unreadMessages > 9) {
+        changeFavicon('/assets/icons/ping_9p.ico')
+      }
+      break;
   }
 }
 
 function readMessages() {
-  console.log(unreadMessages)
   unreadMessages = 0;
   unreadMessage();
 }
@@ -538,7 +576,7 @@ if (isName()) {
   socket.emit("name", name);
 }
 
-window.onfocus = function(){
+window.onfocus = function() {
   readMessages();
 };
 
@@ -581,6 +619,12 @@ function saveSetting(name) {
     case "notifications":
       localStorage.setItem("notifications", document.getElementById("notificationSwitch").checked);
       chat.disableNotifications = document.getElementById("notificationSwitch").checked;
+      chat.debug.log("Disable Notifications set to " + chat.disableNotifications);
+      break;
+    case "emojify":
+      localStorage.setItem("emojify", document.getElementById("emojifySwitch").checked);
+      chat.disableEmojify = document.getElementById("emojifySwitch").checked;
+      chat.debug.log("Disable Emojify set to " + chat.disableEmojify);
       break;
     default:
       console.log("Could not get setting to save");
