@@ -9,14 +9,20 @@ var db = sqlite.Database('./databases/users.db');
 })()
 
 async function registerUser(username, password, confirmPassword){
-	if (password == confirmPassword){
-		const result = await db.run(
-			'INSERT INTO users (userId, username, password) VALUES (?, ?, ?)',
-			null, 
-			username, 
-			password
-		)
+	if (!(userNameExists(username))){
+		if (password == confirmPassword){
+			const result = await db.run(
+				'INSERT INTO users (userId, username, password) VALUES (?, ?, ?)',
+				null, 
+				username, 
+				password
+			)
+		}
 	}
+}
+// TODO: Select the first result of that username, return true if found, return false if it doesn't exist
+function userNameExists(username){
+	return true;	
 }
 
 async function loginUser(username, password){
