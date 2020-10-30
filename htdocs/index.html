@@ -26,88 +26,100 @@
 <body>
 	<div id="overlay" onclick="hideOverlay()">
 		<img src = "" class = "overlayImage" id="overlayContainer"></img>
-    </div>
-	<div id="overlaySettings">
-	  <div class = "overlayDiv">
-		  <div class="tab">
-			<button class="tablinks" onclick="openCity(event, 'London')" id="defaultOpen">Account Settings</button>
-			<button class="tablinks" onclick="openCity(event, 'Paris')">Chat Settings</button>
-			<button class="tablinks" onclick="openCity(event, 'Tokyo')">Miscellaneous Settings</button>
-			<button class="tablinks exit" onclick="hideSettings()">Exit</button>
-		</div>
-
-		<div id="London" class="tabcontent">
-			<br>
-			<h3>Account Settings</h3>
-			<hr class="hr">
-			<h2>Chat Name</h2>
-			<br>
-			<input type = "text" class = "textbox" id = "chatName">
-			<button class = "button full" onclick = "saveSetting('name');">Save</button>
-		</div>
-
-		<div id="Paris" class="tabcontent">
-			<br>
-			<h3>Chat Settings</h3>
-			<hr class="hr">
-			<h2>Message Cap</h2>
-			<br>
-			<input type = "text" class = "textbox" id = "messageCap">
-			<button class = "button full" onclick = "saveSetting('messageCap');">Save</button>
-      <hr class="hr">
-			<h2>Disable Emojify</h2>
-			<br>
-			<label class="switch">
-				<input type="checkbox" id = "emojifySwitch">
-				<span class="slider round"></span>
-			</label>
-			<button class = "button full" onclick = "saveSetting('emojify');">Save</button>
-		</div>
-
-		<div id="Tokyo" class="tabcontent">
-			<br>
-			<h3 id = "misch3">Miscellaneous Settings</h3>
-			<hr class="hr">
-			<h2>Clear your user chat</h2>
-			<br>
-			<button class = "button full" onclick = "saveSetting('clearChat');">Clear Chat</button>
-			<br>
-			<h2>Disable Notifications</h2>
-			<br>
-			<label class="switch">
-				<input type="checkbox" id = "notificationSwitch">
-				<span class="slider round"></span>
-			</label>
-			<button class = "button full" onclick = "saveSetting('notifications');">Save</button>
-		</div>
-	  </div>
-    </div>
-    <div class = "chooseName">
-      <label class = "name">Choose your name</label>
-      <input type = "text" class = "name" id = "name">
-      <button class = "name" onclick = "setName();">Done</button>
-    </div>
-	<div class = "containerList">
-		<button class="settings" onclick="showSettings();" style="vertical-align:middle"><span>Settings </span></button>
-	</div>
-    <!-- Todo, fix stuff layed out below -->
-    <div class = "messagelist" id = "messagelist">    
-      <ul id="messages"></ul>
-    </div>
-    <form action="">
-      <!-- This needs the file icon to the left. -->
-      <div class = "textArea">
-        <!-- This input needs fixing so it doesn't overlap with the message container & messages -->
-        <input placeholder="Type your message here" id="m" autocomplete="off" disabled/>
-        <!-- This is my attempt at the discord emoji thing -->
-        <div class = "textExtras">
-          <!-- This needs a lot of fixing, not properly alligned, grayscaled improperly, looks odd. -->
-          <div class = "emojiButton">
-
-          </div>
-        </div>
       </div>
-    </form>
-    <script src = "script.js"></script>
-  </body>
+      <div id="overlaySettings">
+         <div class = "overlayDiv">
+            <div class="tab">
+               <button class="tablinks" onclick="openCity(event, 'London')" id="defaultOpen">Account Settings</button>
+               <button class="tablinks" onclick="openCity(event, 'Paris')">Chat Settings</button>
+               <button class="tablinks" onclick="openCity(event, 'Tokyo')">Miscellaneous Settings</button>
+               <button class="tablinks exit" onclick="hideSettings()">Exit</button>
+            </div>
+            <div id="London" class="tabcontent">
+							<div class = "settinglist">
+               <br>
+               <h3>Account Settings</h3>
+               <hr class="hr">
+               <h2>Chat Name</h2>
+               <br>
+               <input type = "text" class = "textbox" id = "chatName">
+               <button class = "button full" onclick = "saveSetting('name');">Save</button>
+            </div>
+            </div>
+            <div id="Paris" class="tabcontent">
+							<div class = "settinglist">
+               <br>
+               <h3>Chat Settings</h3>
+               <hr class="hr">
+               <h2>Message Cap</h2>
+               <br>
+               <input type = "text" class = "textbox" id = "messageCap">
+               <button class = "button full" onclick = "saveSetting('messageCap');">Save</button>
+               <hr class="hr">
+               <h2>Disable Emojify</h2>
+               <br>
+               <label class="switch">
+               <input type="checkbox" id = "emojifySwitch">
+               <span class="slider round"></span>
+               </label>
+               <button class = "button full" onclick = "saveSetting('emojify');">Save</button>
+               <hr class="hr">
+               <h2>Max File Download Size (MB)</h2>
+               <br>
+               <input type = "text" class = "textbox" id = "maxFileDownloadSize">
+               <button class = "button full" onclick = "saveSetting('maxFileDownloadSize');">Save</button>
+							 </div>
+            </div>
+            <div id="Tokyo" class="tabcontent">
+							<div class = "settinglist">
+               <br>
+               <h3 id = "misch3">Miscellaneous Settings</h3>
+               <hr class="hr">
+               <h2>Clear your user chat</h2>
+               <br>
+               <button class = "button full" onclick = "saveSetting('clearChat');">Clear Chat</button>
+               <br>
+               <h2>Disable Notifications</h2>
+               <br>
+               <label class="switch">
+               <input type="checkbox" id = "notificationSwitch">
+               <span class="slider round"></span>
+               </label>
+               <button class = "button full" onclick = "saveSetting('notifications');">Save</button>
+							</div>
+            </div>
+         </div>
+      </div>
+      <div class = "chooseName">
+         <label class = "name">Choose your name</label>
+         <input type = "text" class = "name" id = "name">
+         <button class = "name" onclick = "setName();">Done</button>
+      </div>
+      <div class = "containerList">
+         <button class="settings" onclick="showSettings();" style="vertical-align:middle"><span>Settings </span></button>
+         <!-- below is extra stuff like the upload progress bar -->
+				 <p id="fileUploadName"></p>
+				 <p id="fileUploadSize"></p>
+				 <p id="fileUploadType"></p>
+				 <p id="fileUploadStatus"></p>
+      </div>
+      <!-- Todo, fix stuff layed out below -->
+      <div class = "messagelist" id = "messagelist">
+         <ul id="messages"></ul>
+      </div>
+      <form action="">
+         <!-- This needs the file icon to the left. -->
+         <div class = "textArea">
+            <!-- This input needs fixing so it doesn't overlap with the message container & messages -->
+            <input placeholder="Type your message here" id="m" autocomplete="off" disabled/>
+            <!-- This is my attempt at the discord emoji thing -->
+            <div class = "textExtras">
+               <!-- This needs a lot of fixing, not properly alligned, grayscaled improperly, looks odd. -->
+               <div class = "emojiButton"></div>
+               <input class="uploadButton" id = "fileInput" name = "file" type="file">
+            </div>
+         </div>
+      </form>
+      <script src = "script.js"></script>
+   </body>
 </html>

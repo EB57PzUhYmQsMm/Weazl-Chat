@@ -319,8 +319,9 @@ TODO: fix grayscale, size, position
 */ 
 div.emojiButton{
     background-image: url(/assets/emoji.png);
+		top: 12%;
+		left: 5%;
     position: absolute;
-    height: 50%;
     margin-left: 5%;
     background-position: 50%;
     background-repeat: no-repeat;
@@ -338,6 +339,41 @@ div.emojiButton{
     font-family: inherit;
     font-size: 100%;
     margin: 0;
+}
+
+.uploadButton{
+    background-image: url(/assets/other/attachfile.png);
+		top: 12%;
+		left: 25%;
+    position: absolute;
+    margin-left: 5%;
+    background-repeat: no-repeat;
+		background-size: 23px 22px;
+    width: 22px;
+    height: 22px;
+    display: block;
+    transform: scale(1);
+    filter: grayscale(100%);
+    padding: 0;
+    border: 0;
+    font-weight: inherit;
+    font-style: inherit;
+    font-family: inherit;
+    font-size: 100%;
+    margin: 0;
+		cursor: pointer;
+}
+
+.uploadButton::-webkit-file-upload-button {
+  visibility: hidden;
+}
+.uploadButton::before {
+  display: inline-block;
+  background: linear-gradient(top, #f9f9f9, #e3e3e3);
+  border: 1px solid #999;
+  outline: none;
+  white-space: nowrap;
+  -webkit-user-select: none;
 }
 
 div.textExtras {
@@ -399,6 +435,17 @@ div.message{
     left: 0;
     z-index: 400;
     overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.settinglist{
+    width: 66%;
+    height: auto;
+    position: absolute;
+    top: auto;
+    left: auto;
+    z-index: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
 }
 
